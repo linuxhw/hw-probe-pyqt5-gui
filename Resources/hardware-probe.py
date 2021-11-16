@@ -2,6 +2,7 @@
 
 # Hardware Probe
 # Copyright (c) 2020-21, Simon Peter <probono@puredarwin.org>
+# Copyright (c) 2021 Linux Hardware Project
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -32,11 +33,11 @@
 # License: Free for non-commercial use.
 # Commercial usage: Not allowed
 
-import sys, os, re, socket
-import shutil
-from datetime import datetime
+import sys, os, socket
+import tempfile
 
 from PyQt5 import QtWidgets, QtGui, QtCore # pkg install py37-qt5-widgets
+from PyQt5.QtWidgets import QTreeView, QFileSystemModel, QVBoxLayout, QPlainTextEdit, QMainWindow
 
 # Plenty of TODOs and FIXMEs are sprinkled across this code.
 # These are invitations for new contributors to implement or comment on how to best implement.
@@ -76,13 +77,16 @@ def internetCheckConnected(host="8.8.8.8", port=53, timeout=3):
 # Initialization
 # https://doc.qt.io/qt-5/qwizard.html
 #############################################################################
-
-
 app = QtWidgets.QApplication(sys.argv)
 
 class Wizard(QtWidgets.QWizard, object):
-    def __init__(self):
+    Page_Intro   = 1
+    Page_Filer   = 2
+    Page_Privacy = 3
+    Page_Upload  = 4
+    Page_Success = 5
 
+    def __init__(self):
         app.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor)) # It can take some time before we show the initial page, because hw-probe runs there
 
         print("Preparing wizard")
@@ -95,9 +99,10 @@ class Wizard(QtWidgets.QWizard, object):
         self.setPixmap(QtWidgets.QWizard.BackgroundPixmap, QtGui.QPixmap(os.path.dirname(__file__) + '/Stethoscope-icon.png'))
         self.setOption(QtWidgets.QWizard.ExtendedWatermarkPixmap, True) # Extend WatermarkPixmap all the way down to the window's edge; https://doc.qt.io/qt-5/qwizard.html#wizard-look-and-feel
 
-        self.hw_probe_tool = '/usr/local/bin/hw-probe'
+        self.hw_probe_tool = '/usr/bin/hw-probe'
+        self.hw_probe_output = tempfile.mkdtemp()
+        self.hw_probe_done = False
         self.server_probe_url = None
-        self.local_probe_path = None
 
         self.setWindowTitle(tr("Hardware Probe"))
         self.setFixedSize(600, 400)
@@ -125,20 +130,6 @@ class Wizard(QtWidgets.QWizard, object):
         else:
             return self.currentId() + 1
 
-    def playSound(self):
-        print("Playing sound")
-        soundfile = os.path.dirname(__file__) + '/success.ogg' # https://freesound.org/people/Leszek_Szary/sounds/171670/, licensed under CC0
-
-        proc = QtCore.QProcess()
-        command = 'ogg123'
-        args = ['-q', soundfile]
-        print(command, args)
-        try:
-            proc.startDetached(command, args)
-        except:
-            pass
-
-
 wizard = Wizard()
 
 #############################################################################
@@ -165,8 +156,62 @@ class PrivacyPage(QtWidgets.QWizardPage, object):
 
         additional_licenses_label = QtWidgets.QLabel()
         additional_licenses_label.setWordWrap(True)
-        additional_licenses_label.setText(tr('Please see %s for more information.') % '<a href="https://bsd-hardware.info">https://bsd-hardware.info</a>')
+        additional_licenses_label.setText(tr('Please see %s for more information.') % '<a href="https://linux-hardware.org">https://Linux-Hardware.org</a>')
         license_layout.addWidget(additional_licenses_label)
+
+#############################################################################
+# Filer page
+#############################################################################
+class Filer(QtWidgets.QWizardPage, object):
+    def __init__(self):
+
+        print("Preparing probe raw viewer")
+        super().__init__()
+
+        self.setTitle(tr('Raw collected info'))
+
+        self.model = QFileSystemModel()
+        self.model.setRootPath(wizard.hw_probe_output)
+        self.tree = QTreeView()
+        self.tree.setModel(self.model)
+        self.tree.setRootIndex(self.model.index(wizard.hw_probe_output))
+        self.tree.setColumnWidth(0, 250)
+        self.tree.setAlternatingRowColors(True)
+        self.tree.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.tree.customContextMenuRequested.connect(self.contextMenu)
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.tree)
+        self.setLayout(layout)
+
+    def contextMenu(self):
+        menu = QtWidgets.QMenu()
+        open = menu.addAction("Open")
+        open.triggered.connect(self.openFile)
+        cursor = QtGui.QCursor()
+        menu.exec_(cursor.pos())
+
+    def openFile(self):
+        index = self.tree.currentIndex()
+        filePath = self.model.filePath(index)
+        text = open(filePath).read()
+
+        viewer = Viewer(wizard)
+        viewer.setup(os.path.basename(filePath), text)
+        viewer.show()
+
+class Viewer(QMainWindow):
+    def __init__(self, *args, **kwargs):
+        super(Viewer, self).__init__(*args, **kwargs)
+        self.editor = QPlainTextEdit()
+        self.setCentralWidget(self.editor)
+        self.editor.setReadOnly(True)
+        self.editor.setLineWrapMode(QPlainTextEdit.NoWrap)
+        self.resize(640, 480)
+
+    def setup(self, title, text):
+        self.setWindowTitle(title)
+        self.editor.setPlainText(text)
 
 #############################################################################
 # Intro page
@@ -179,30 +224,23 @@ class IntroPage(QtWidgets.QWizardPage, object):
         super().__init__()
 
         self.setTitle(tr('Hardware Probe'))
-        self.setSubTitle(tr("""<p>This utility collects hardware details of your computer and can anonymously upload them to a public database.</p>
+        self.setSubTitle(tr("""<p>This utility collects anonymized hardware details of your computer and can upload them to a public database.</p>
         <p>This can help users and operating system developers to collaboratively debug hardware related issues, check for operating system compatibility and find drivers.</p>
         <p>You will get a permanent probe URL to view and share collected information.</p><br><br><br>"""))
 
         layout = QtWidgets.QVBoxLayout(self)
         # layout.addWidget(center_widget, True) # True = add stretch vertically
 
-        wizard.showHardwareProbeButton = QtWidgets.QPushButton(tr('Show Hardware Probe'), self)
+        wizard.showHardwareProbeButton = QtWidgets.QPushButton(tr('Show raw collected info'), self)
         wizard.showHardwareProbeButton.clicked.connect(self.showHardwareProbeButtonClicked)
         wizard.showHardwareProbeButton.setDisabled(True)
+        self.hw_probe_done = False
         layout.addWidget(wizard.showHardwareProbeButton)
 
     def showHardwareProbeButtonClicked(self):
         print("showHardwareProbeButtonClicked")
-        print("self.local_probe_path: %s" % self.local_probe_path)
-        proc = QtCore.QProcess()
-        command = 'launch'
-        args = ["Filer", self.local_probe_path]
-        try:
-            print("Starting %s %s" % (command, args))
-            proc.startDetached(command, args)
-        except:
-            wizard.showErrorPage(tr("Failed to open the hardware probe."))
-            return
+        print("hw_probe_output: %s" % wizard.hw_probe_output)
+        wizard.next()
 
     def initializePage(self):
         print("Displaying IntroPage")
@@ -214,8 +252,12 @@ class IntroPage(QtWidgets.QWizardPage, object):
     def run_probe_locally(self):
         proc = QtCore.QProcess()
 
-        command = 'sudo'
-        args = ["-A", "-E", self.wizard().hw_probe_tool, "-all"]
+        if os.environ.get('HW_PROBE_FLATPAK'):
+            command = self.wizard().hw_probe_tool
+            args = ["-flatpak", "-all", "-output", self.wizard().hw_probe_output]
+        else:
+            command = 'sudo'
+            args = ["-A", "-E", self.wizard().hw_probe_tool, "-all", "-output", self.wizard().hw_probe_output]
 
         try:
             print("Starting %s %s" % (command, args))
@@ -223,33 +265,22 @@ class IntroPage(QtWidgets.QWizardPage, object):
         except:
             wizard.showErrorPage(tr("Failed to run the %s tool." % wizard.hw_probe_tool)) # This does not catch most cases of errors; hence see below
             return
+
         proc.waitForFinished()
 
         output_lines = proc.readAllStandardOutput().split("\n")
-        err_lines = proc.readAllStandardError().split("\n")
-        if len(output_lines) > 2:
-            self.local_probe_path = str(output_lines[len(output_lines)-2], encoding='utf-8').split(":")[1].strip() # /root/HW_PROBE/LATEST/hw.info
-            print("self.local_probe_path: %s" % self.local_probe_path)
-        else:
+        if len(output_lines) <= 2:
             wizard.showErrorPage(tr("Failed to run the %s tool." % wizard.hw_probe_tool)) # This catches most cases if something goes wrong
             return
 
-        # Make the Hardware Probe owned by user for easy access by the user
-
-        command = 'sudo'
-        args = ["-A", "-E", "chown", "-R", os.environ.get('USER'), self.local_probe_path]
-
-        try:
-            print("Starting %s %s" % (command, args))
-            proc.start(command, args)
-        except:
-            wizard.showErrorPage(tr(
-                "Failed to set the owner to %x.") % os.environ.get('USER'))  # This does not catch most cases of errors; hence see below
-            return
-        proc.waitForFinished()
-
         wizard.showHardwareProbeButton.setDisabled(False)
         app.setOverrideCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+
+        wizard.hw_probe_done = True
+        wizard.currentPage().completeChanged.emit()
+
+    def isComplete(self):
+        return wizard.hw_probe_done
 
 #############################################################################
 # Installation page
@@ -290,16 +321,19 @@ class UploadPage(QtWidgets.QWizardPage, object):
         print("Starting Upload")
 
         proc = QtCore.QProcess()
-        command =  "sudo"
-        args = ["-A", "-E", wizard.hw_probe_tool, "-all", "-upload"]
+
+        command = wizard.hw_probe_tool
+        args = ["-upload", "-output", self.wizard().hw_probe_output]
+
         try:
             print("Starting %s %s" % (command, args))
             proc.start(command, args)
         except:
             wizard.showErrorPage(tr("Failed to upload using the %s tool." % wizard.hw_probe_tool)) # This does not catch most cases of errors; hence see below
             return
+
         proc.waitForFinished()
-        # DIXME: What can we do so that the progress bar stays animatged without the need for threading?
+        # FIXME: What can we do so that the progress bar stays animated without the need for threading?
         output_lines = proc.readAllStandardOutput().split("\n")
         err_lines = proc.readAllStandardError().split("\n")
         if err_lines[0] != "":
@@ -310,7 +344,7 @@ class UploadPage(QtWidgets.QWizardPage, object):
                 line = str(line, encoding='utf-8')
                 print(line)
                 if "Probe URL:" in line:
-                    wizard.server_probe_url = line.replace("Probe URL:","").strip()  # Probe URL: https://bsd-hardware.info/?probe=...
+                    wizard.server_probe_url = line.replace("Probe URL:","").strip()  # Probe URL: https://linux-hardware.org/?probe=...
                     print("wizard.server_probe_url: %s" % wizard.server_probe_url)
         else:
             wizard.showErrorPage(tr("Failed to upload using the %s tool." % wizard.hw_probe_tool)) # This catches most cases if something goes wrong
@@ -334,10 +368,8 @@ class SuccessPage(QtWidgets.QWizardPage, object):
         wizard.setButtonLayout(
             [QtWidgets.QWizard.Stretch, QtWidgets.QWizard.CancelButton])
 
-        # wizard.playSound()
-
         self.setTitle(tr('Hardware Probe Uploaded'))
-        self.setSubTitle(tr('Thank you for uploading your Hardware Probe.'))
+        # self.setSubTitle(tr('Thank you for uploading your Hardware Probe.'))
 
         logo_pixmap = QtGui.QPixmap(os.path.dirname(__file__) + '/check.png').scaledToHeight(160, QtCore.Qt.SmoothTransformation)
         logo_label = QtWidgets.QLabel()
@@ -353,12 +385,12 @@ class SuccessPage(QtWidgets.QWizardPage, object):
         layout = QtWidgets.QVBoxLayout(self)
         layout.addWidget(center_widget, True) # True = add stretch vertically
 
-        # label = QtWidgets.QLabel()
-        # label.setText("You can view it at <a href='%s'>%s</a>" % (wizard.server_probe_url, wizard.server_probe_url))
-        # label.setWordWrap(True)
-        # layout.addWidget(label)
+        label = QtWidgets.QLabel()
+        label.setText("Your probe URL is <a href='%s'>%s</a>" % (wizard.server_probe_url, wizard.server_probe_url))
+        label.setWordWrap(True)
+        layout.addWidget(label)
 
-        wizard.showUploadedProbeButton = QtWidgets.QPushButton(re('Show uploaded Hardware Probe'), self)
+        wizard.showUploadedProbeButton = QtWidgets.QPushButton('Open probe URL in your browser', self)
         wizard.showUploadedProbeButton.clicked.connect(self.showUploadedProbeButtonClicked)
         layout.addWidget(wizard.showUploadedProbeButton)
 
@@ -369,8 +401,8 @@ class SuccessPage(QtWidgets.QWizardPage, object):
         print("showHardwareProbeButtonClicked")
         print("wizard.server_probe_url: %s" % wizard.server_probe_url)
         proc = QtCore.QProcess()
-        command = 'launch'
-        args = ["Falkon", wizard.server_probe_url]
+        command = 'xdg-open'
+        args = [wizard.server_probe_url]
         try:
             print("Starting %s %s" % (command, args))
             proc.startDetached(command, args)
@@ -412,8 +444,7 @@ class ErrorPage(QtWidgets.QWizardPage, object):
         print("Displaying ErrorPage")
         app.setOverrideCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         wizard.showHardwareProbeButton.hide() # FIXME: Why is this needed?
-        wizard.progress.hide()  # FIXME: Why is this needed?
-        # wizard.playSound()
+        wizard.progress.hide()  # FIXME: Why is this needed?3
         self.label.setWordWrap(True)
         self.label.clear()
         self.label.setText(wizard.error_message_nice)
@@ -424,15 +455,11 @@ class ErrorPage(QtWidgets.QWizardPage, object):
 # Pages flow in the wizard
 #############################################################################
 
-intro_page = IntroPage()
-wizard.addPage(intro_page)
-
-license_page = PrivacyPage()
-wizard.addPage(license_page)
-installation_page = UploadPage()
-wizard.addPage(installation_page)
-success_page = SuccessPage()
-wizard.addPage(success_page)
+wizard.setPage(wizard.Page_Intro, IntroPage())
+wizard.setPage(wizard.Page_Filer, Filer())
+wizard.setPage(wizard.Page_Privacy, PrivacyPage())
+wizard.setPage(wizard.Page_Upload, UploadPage())
+wizard.setPage(wizard.Page_Success, SuccessPage())
 
 wizard.show()
 sys.exit(app.exec_())
