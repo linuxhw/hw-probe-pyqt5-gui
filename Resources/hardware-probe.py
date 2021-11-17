@@ -281,7 +281,6 @@ class IntroPage(QtWidgets.QWizardPage, object):
         proc.waitForFinished()
 
         output_lines = proc.readAllStandardOutput().split("\n")
-        print("\n".join(output_lines))
 
         if len(output_lines) <= 2:
             wizard.showErrorPage(tr("Failed to run the %s tool." % wizard.hw_probe_tool)) # This catches most cases if something goes wrong
