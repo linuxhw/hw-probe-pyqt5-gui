@@ -105,8 +105,11 @@ class Wizard(QtWidgets.QWizard, object):
         self.setPixmap(QtWidgets.QWizard.BackgroundPixmap, QtGui.QPixmap(os.path.dirname(__file__) + '/Stethoscope-icon.png'))
         self.setOption(QtWidgets.QWizard.ExtendedWatermarkPixmap, True) # Extend WatermarkPixmap all the way down to the window's edge; https://doc.qt.io/qt-5/qwizard.html#wizard-look-and-feel
 
-        self.hw_probe_tool = '/usr/bin/hw-probe'
-        self.hw_probe_output = tempfile.mkdtemp()
+        self.hw_probe_tool = 'hw-probe'
+        if os.environ.get('HW_PROBE_FLATPAK'):
+            self.hw_probe_output = tempfile.mkdtemp(dir = os.environ.get('XDG_DATA_HOME'))
+        else:
+            self.hw_probe_output = tempfile.mkdtemp()
         self.hw_probe_done = False
         self.server_probe_url = None
 
@@ -278,6 +281,8 @@ class IntroPage(QtWidgets.QWizardPage, object):
         proc.waitForFinished()
 
         output_lines = proc.readAllStandardOutput().split("\n")
+        print("\n".join(output_lines))
+
         if len(output_lines) <= 2:
             wizard.showErrorPage(tr("Failed to run the %s tool." % wizard.hw_probe_tool)) # This catches most cases if something goes wrong
             return
