@@ -35,6 +35,7 @@
 
 import sys, os, socket
 import tempfile
+import shutil
 
 from PyQt5 import QtWidgets, QtGui, QtCore # pkg install py37-qt5-widgets
 from PyQt5.QtWidgets import QTreeView, QFileSystemModel, QVBoxLayout, QPlainTextEdit, QMainWindow
@@ -49,10 +50,14 @@ import tstranslator
 # FIXME: Do not import translations from outside of the appliction bundle
 # which currently is difficult because we have all translations for all applications
 # in the whole repository in the same .ts files
-tstr = tstranslator.TsTranslator(os.path.dirname(__file__) + "/i18n", "")
+tstr = None
 def tr(input):
-    return tstr.tr(input)
-
+    try:
+        if not tstr:
+            tstr = tstranslator.TsTranslator(os.path.dirname(__file__) + "/i18n", "")
+        return tstr.tr(input)
+    except:
+        return input
 
 #############################################################################
 # Helper functions
@@ -93,6 +98,7 @@ class Wizard(QtWidgets.QWizard, object):
         super().__init__()
 
         self.should_show_last_page = False
+        self.skip_raw_view = True
         self.error_message_nice = tr("An unknown error occured.")
 
         self.setWizardStyle(QtWidgets.QWizard.MacStyle)
@@ -127,6 +133,8 @@ class Wizard(QtWidgets.QWizard, object):
     def nextId(self):
         if self.should_show_last_page == True:
             return max(wizard.pageIds())
+        elif self.skip_raw_view and self.currentId() == self.Page_Intro:
+            return self.Page_Privacy
         else:
             return self.currentId() + 1
 
@@ -168,7 +176,7 @@ class Filer(QtWidgets.QWizardPage, object):
         print("Preparing probe raw viewer")
         super().__init__()
 
-        self.setTitle(tr('Raw collected info'))
+        self.setTitle(tr('Raw Collected Info'))
 
         self.model = QFileSystemModel()
         self.model.setRootPath(wizard.hw_probe_output)
@@ -231,7 +239,7 @@ class IntroPage(QtWidgets.QWizardPage, object):
         layout = QtWidgets.QVBoxLayout(self)
         # layout.addWidget(center_widget, True) # True = add stretch vertically
 
-        wizard.showHardwareProbeButton = QtWidgets.QPushButton(tr('Show raw collected info'), self)
+        wizard.showHardwareProbeButton = QtWidgets.QPushButton(tr('Collecting hardware info ...'), self)
         wizard.showHardwareProbeButton.clicked.connect(self.showHardwareProbeButtonClicked)
         wizard.showHardwareProbeButton.setDisabled(True)
         self.hw_probe_done = False
@@ -240,6 +248,7 @@ class IntroPage(QtWidgets.QWizardPage, object):
     def showHardwareProbeButtonClicked(self):
         print("showHardwareProbeButtonClicked")
         print("hw_probe_output: %s" % wizard.hw_probe_output)
+        wizard.skip_raw_view = False
         wizard.next()
 
     def initializePage(self):
@@ -273,6 +282,7 @@ class IntroPage(QtWidgets.QWizardPage, object):
             wizard.showErrorPage(tr("Failed to run the %s tool." % wizard.hw_probe_tool)) # This catches most cases if something goes wrong
             return
 
+        wizard.showHardwareProbeButton.setText(tr('Show raw collected info'))
         wizard.showHardwareProbeButton.setDisabled(False)
         app.setOverrideCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
 
@@ -462,4 +472,9 @@ wizard.setPage(wizard.Page_Upload, UploadPage())
 wizard.setPage(wizard.Page_Success, SuccessPage())
 
 wizard.show()
-sys.exit(app.exec_())
+
+retcode = app.exec_()
+if os.path.exists(wizard.hw_probe_output):
+    print("Cleanup")
+    shutil.rmtree(wizard.hw_probe_output)
+sys.exit(retcode)
