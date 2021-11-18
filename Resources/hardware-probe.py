@@ -266,7 +266,7 @@ class IntroPage(QtWidgets.QWizardPage, object):
 
         if os.environ.get('HW_PROBE_FLATPAK'):
             command = self.wizard().hw_probe_tool
-            args = ["-flatpak", "-all", "-output", self.wizard().hw_probe_output]
+            args = ["-all", "-output", self.wizard().hw_probe_output]
         else:
             command = 'sudo'
             args = ["-A", "-E", self.wizard().hw_probe_tool, "-all", "-output", self.wizard().hw_probe_output]
@@ -337,7 +337,7 @@ class UploadPage(QtWidgets.QWizardPage, object):
         proc = QtCore.QProcess()
 
         command = wizard.hw_probe_tool
-        args = ["-upload", "-output", self.wizard().hw_probe_output]
+        args = ["-from-gui", "-upload", "-output", self.wizard().hw_probe_output]
 
         try:
             print("Starting %s %s" % (command, args))
