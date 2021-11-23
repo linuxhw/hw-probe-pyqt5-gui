@@ -108,8 +108,11 @@ class Wizard(QtWidgets.QWizard, object):
         self.hw_probe_tool = 'hw-probe'
         if os.environ.get('HW_PROBE_FLATPAK'):
             self.hw_probe_output = tempfile.mkdtemp(dir = os.environ.get('XDG_DATA_HOME'))
+        elif os.environ.get('HW_PROBE_SNAP'):
+            self.hw_probe_output = tempfile.mkdtemp(dir = os.environ.get('SNAP_USER_COMMON'))
         else:
             self.hw_probe_output = tempfile.mkdtemp()
+
         self.hw_probe_done = False
         self.server_probe_url = None
 
@@ -264,7 +267,7 @@ class IntroPage(QtWidgets.QWizardPage, object):
     def run_probe_locally(self):
         proc = QtCore.QProcess()
 
-        if os.environ.get('HW_PROBE_FLATPAK'):
+        if os.environ.get('HW_PROBE_FLATPAK') or os.environ.get('HW_PROBE_SNAP'):
             command = self.wizard().hw_probe_tool
             args = ["-all", "-output", self.wizard().hw_probe_output]
         else:
@@ -275,15 +278,22 @@ class IntroPage(QtWidgets.QWizardPage, object):
             print("Starting %s %s" % (command, args))
             proc.start(command, args)
         except:
-            wizard.showErrorPage(tr("Failed to run the %s tool." % wizard.hw_probe_tool)) # This does not catch most cases of errors; hence see below
+            wizard.showErrorPage(tr("Failed to collect info.")) # This does not catch most cases of errors; hence see below
             return
 
         proc.waitForFinished()
 
         output_lines = proc.readAllStandardOutput().split("\n")
 
-        if len(output_lines) <= 2:
-            wizard.showErrorPage(tr("Failed to run the %s tool." % wizard.hw_probe_tool)) # This catches most cases if something goes wrong
+        done_properly = None
+        for line in output_lines:
+            line = str(line, encoding='utf-8')
+            print(line)
+            if "Local probe path:" in line:
+                done_properly = True
+
+        if not done_properly:
+            wizard.showErrorPage(tr("Failed to collect info.")) # This catches most cases if something goes wrong
             return
 
         wizard.showHardwareProbeButton.setText(tr('Show raw collected info'))
@@ -337,6 +347,7 @@ class UploadPage(QtWidgets.QWizardPage, object):
         proc = QtCore.QProcess()
 
         command = wizard.hw_probe_tool
+
         args = ["-from-gui", "-upload", "-output", self.wizard().hw_probe_output]
 
         try:
@@ -353,15 +364,16 @@ class UploadPage(QtWidgets.QWizardPage, object):
         if err_lines[0] != "":
             wizard.showErrorPage(str(err_lines[0], encoding='utf-8'))
             return
-        elif len(output_lines) > 2:
+        else:
             for line in output_lines:
                 line = str(line, encoding='utf-8')
                 print(line)
                 if "Probe URL:" in line:
                     wizard.server_probe_url = line.replace("Probe URL:","").strip()  # Probe URL: https://linux-hardware.org/?probe=...
                     print("wizard.server_probe_url: %s" % wizard.server_probe_url)
-        else:
-            wizard.showErrorPage(tr("Failed to upload using the %s tool." % wizard.hw_probe_tool)) # This catches most cases if something goes wrong
+
+        if not wizard.server_probe_url:
+            wizard.showErrorPage(tr("Failed to upload the probe."))
             return
 
         wizard.next()
