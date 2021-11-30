@@ -9,43 +9,43 @@
     </message>
     <message>
         <source>Hardware Probe</source>
-        <translation>Определение оборудования</translation>
+        <translation>Проба оборудования</translation>
     </message>
     <message>
         <source>Privacy Information</source>
-        <translation>Приватная информация</translation>
+        <translation>Информация о конфиденциальности</translation>
     </message>
     <message>
-        <source>Uploading a Hardware Probe is subject to the following Pricacy Terms.</source>
-        <translation>Передача данных о оборудовании соответствует соглашению и приватности.</translation>
+        <source>Uploading a Hardware Probe is subject to the following Privacy Terms.</source>
+        <translation>Передача данных об оборудовании соответствует следующим условиям приватности.</translation>
+    </message>
+    <message>
+        <source>Raw Collected Info</source>
+        <translation>Собранные данные</translation>
     </message>
     <message>
         <source>Please see %s for more information.</source>
-        <translation>Пожалуйста просмотрите %s для дополнительной информации.</translation>
+        <translation>Пожалуйста, передите по ссылке %s для дополнительной информации.</translation>
     </message>
     <message>
-        <source>&lt;p&gt;This utility collects hardware details of your computer and can anonymously upload them to a public database.&lt;/p&gt;
-        &lt;p&gt;This can help users and operating system developers to collaboratively debug hardware related issues, check for operating system compatibility and find drivers.&lt;/p&gt;
+        <source>&lt;p&gt;This utility collects anonymized hardware details of your computer and can upload them to a public database.&lt;/p&gt;
+        &lt;p&gt;This can help users and developers to collaboratively debug hardware related issues, check for hardware compatibility and find drivers.&lt;/p&gt;
         &lt;p&gt;You will get a permanent probe URL to view and share collected information.&lt;/p&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;</source>
-        <translation>&lt;p&gt;Данная утилита собирает информацию о оборудовании этого компьютера и может анонимно передать информацию в публичную базу информации.&lt;/p&gt;
-        &lt;p&gt;Это может помочь пользователями и разработчикам для совместного решения возникающих проблем с устройствами и оборудованием, проверкой совместимости системы и поиска драйверов.&lt;/p&gt;
-        &lt;p&gt;Вы получите ссылку для просмотра и публикации собранной информации.&lt;/p&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;</translation>
+        <translation>&lt;p&gt;Эта утилита собирает анонимные данные о вашем оборудовании и может загрузить их в базу оборудования.&lt;/p&gt;
+        &lt;p&gt;Это может помочь как другим пользователям, так и разработчикам системы в совместной отладке проблем с оборудованием, в проверке совместимости и в поиске драйверов.&lt;/p&gt;
+        &lt;p&gt;Вам будет выдана постоянная ссылка для просмотра собранной информации. Ей можно поделиться с нужными людьми.&lt;/p&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <source>Show Hardware Probe</source>
-        <translation>Показать информацию о оборудовании</translation>
+        <source>Collecting hardware info ...</source>
+        <translation>Сбор информации об оборудовании ...</translation>
     </message>
     <message>
-        <source>Failed to open the hardware probe.</source>
-        <translation>Ошибка, при открытии информации о оборудовании.</translation>
+        <source>Failed to collect info.</source>
+        <translation>Не удалось собрать информацию об оборудовании.</translation>
     </message>
     <message>
-        <source>Failed to run the %s tool.</source>
-        <translation>Ошибка при запуске инструмента %s.</translation>
-    </message>
-    <message>
-        <source>Failed to set the owner to %x.</source>
-        <translation>Ошибка при назначении владельца для %x.</translation>
+        <source>Show raw collected info</source>
+        <translation>Просмотреть собранные данные</translation>
     </message>
     <message>
         <source>Uploading Hardware Probe</source>
@@ -53,27 +53,31 @@
     </message>
     <message>
         <source>The Hardware Probe is being uploaded to the public database</source>
-        <translation>Информация о оборудовании передана в публичную базу данных</translation>
+        <translation>Информация о оборудовании передается в публичную базу данных</translation>
     </message>
     <message>
         <source>You need an active internet connection in order to upload.</source>
-        <translation>Необходимо активное интернет соединение для отправки данных.</translation>
+        <translation>Необходимо активное интернет-соединение для отправки данных.</translation>
     </message>
     <message>
-        <source>Failed to upload using the %s tool.</source>
-        <translation>Ошибка передачи данных при использовании %s.</translation>
+        <source>Failed to upload data.</source>
+        <translation>Ошибка передачи данных.</translation>
+    </message>
+    <message>
+        <source>Failed to upload the probe.</source>
+        <translation>Ошибка создания пробы.</translation>
     </message>
     <message>
         <source>Hardware Probe Uploaded</source>
-        <translation>Информация о оборудовании передана</translation>
+        <translation>Информация об оборудовании передана</translation>
     </message>
     <message>
         <source>Quit</source>
-        <translation>Выход</translation>
+        <translation>Выйти</translation>
     </message>
     <message>
         <source>Failed to open the uploaded hardware probe.</source>
-        <translation>Ошибка при передаче информации о оборудовании.</translation>
+        <translation>Ошибка открытия ссылки на пробу оборудования.</translation>
     </message>
     <message>
         <source>Error</source>
@@ -81,7 +85,11 @@
     </message>
     <message>
         <source>Hardware Probe was not successful.</source>
-        <translation>Определение оборудования выполнено с ошибкой.</translation>
+        <translation>Проба оборудования выполнена с ошибкой.</translation>
+    </message>
+    <message>
+        <source>This will upload the anonymized hardware probe to the Linux hardware database. The probe will be published publicly under a permanent URL to view the probe.\n\nPrivate information (including the username, machine's hostname, IP addresses, MAC addresses, UUIDs and serial numbers) is not uploaded to the database.\n\nThe tool uploads 32-byte prefix of salted SHA512 hash of MAC addresses/UUIDs and serial numbers to properly distinguish between different computers and hard drives. All the data is uploaded securely via HTTPS.\n\nDISCLAIMER: BY USING THIS UTILITY, YOU AGREE THAT INFORMATION ABOUT YOUR HARDWARE WILL BE UPLOADED TO A PUBLICLY VISIBLE DATABASE. DO NOT USE THIS UTILITY IF YOU DO NOT AGREE WITH THIS.\n\nPlease contact https://linux-hardware.org/?view=contacts in case of questions and in case you wish accidentally submitted probes to be removed from the database.\n</source>
+        <translation>Переход далее загрузит анонимную пробу оборудования в базу данных оборудования Linux. Проба будет опубликована и доступна по постояноой ссылке для ее просмотра.\n\nПриватная информация (включая имя пользователя, имя хоста, IP-адреса, MAC-адреса, идентификаторы UUID и серийные номера) не передаются в базу данных.\n\nПрограмма загрузит в базу 32-байтовый префикс хешсуммы SHA512 от MAC-адресов/UUID и серийных номеров, чтобы различать различные компьютеры и жесткие диски. Все данные загружаются в базу по протоколу HTTPS.\n\nОТКАЗ ОТ ОТВЕТСТВЕННОСТИ: ИСПОЛЬЗУЯ ЭТУ ПРОГРАММУ, ВЫ СОГЛАШАЕТЕСЬ С ТЕМ, ЧТО ИНФОРМАЦИЯ О ВАШЕМ ОБОРУДОВАНИИ БУДЕТ ЗАГРУЖЕНА В ПУБЛИЧНО ВИДИМУЮ БАЗУ ДАННЫХ. НЕ ИСПОЛЬЗУЙТЕ ЭТУ УТИЛИТУ, ЕСЛИ ВЫ НЕ СОГЛАСНЫ С ЭТИМ.\n\nПожалуйста, свяжитесь с автором проекта на странице https://linux-hardware.org/?view=contacts в случае, если вы желаете удалить пробу, созданную по ошибке.\n</translation>
     </message>
 </context>
 <context>

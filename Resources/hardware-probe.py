@@ -52,6 +52,7 @@ import tstranslator
 # in the whole repository in the same .ts files
 tstr = None
 def tr(input):
+    global tstr
     try:
         if not tstr:
             tstr = tstranslator.TsTranslator(os.path.dirname(__file__) + "/i18n", "")
@@ -75,6 +76,9 @@ def internetCheckConnected(host="8.8.8.8", port=53, timeout=3):
         return True
     except socket.error as ex:
         print(ex)
+        print("Trying ping")
+        if os.system("ping -c 1 google.com >/dev/null") == 0:
+            return True
         return False
 
 
@@ -157,21 +161,20 @@ class PrivacyPage(QtWidgets.QWizardPage, object):
         super().__init__()
 
         self.setTitle(tr('Privacy Information'))
-        self.setSubTitle(tr('Uploading a Hardware Probe is subject to the following Pricacy Terms.'))
-        license_label = QtWidgets.QTextBrowser()
-        license_layout = QtWidgets.QVBoxLayout(self)
-        license_text = open(os.path.dirname(__file__) + '/intro.txt', 'r').read()
-        license_label.setText(license_text)  # Skip the first 3 lines
+        self.setSubTitle(tr('Uploading a Hardware Probe is subject to the following Privacy Terms.'))
+        privacy_label = QtWidgets.QTextBrowser()
+        privacy_layout = QtWidgets.QVBoxLayout(self)
+        privacy_label.setText(tr(open(os.path.dirname(__file__) + '/intro.txt', 'r').read()))  # Skip the first 3 lines
         font = wizard.font()
         font.setPointSize(9)
-        license_label.setFont(font)
+        privacy_label.setFont(font)
 
-        license_layout.addWidget(license_label)
+        privacy_layout.addWidget(privacy_label)
 
-        additional_licenses_label = QtWidgets.QLabel()
-        additional_licenses_label.setWordWrap(True)
-        additional_licenses_label.setText(tr('Please see %s for more information.') % '<a href="https://linux-hardware.org">https://Linux-Hardware.org</a>')
-        license_layout.addWidget(additional_licenses_label)
+        additional_privacy_label = QtWidgets.QLabel()
+        additional_privacy_label.setWordWrap(True)
+        additional_privacy_label.setText(tr('Please see %s for more information.') % '<a href="https://linux-hardware.org">https://Linux-Hardware.org</a>')
+        privacy_layout.addWidget(additional_privacy_label)
 
 #############################################################################
 # Filer page
@@ -239,7 +242,7 @@ class IntroPage(QtWidgets.QWizardPage, object):
 
         self.setTitle(tr('Hardware Probe'))
         self.setSubTitle(tr("""<p>This utility collects anonymized hardware details of your computer and can upload them to a public database.</p>
-        <p>This can help users and operating system developers to collaboratively debug hardware related issues, check for operating system compatibility and find drivers.</p>
+        <p>This can help users and developers to collaboratively debug hardware related issues, check for hardware compatibility and find drivers.</p>
         <p>You will get a permanent probe URL to view and share collected information.</p><br><br><br>"""))
 
         layout = QtWidgets.QVBoxLayout(self)
@@ -354,7 +357,7 @@ class UploadPage(QtWidgets.QWizardPage, object):
             print("Starting %s %s" % (command, args))
             proc.start(command, args)
         except:
-            wizard.showErrorPage(tr("Failed to upload using the %s tool." % wizard.hw_probe_tool)) # This does not catch most cases of errors; hence see below
+            wizard.showErrorPage(tr("Failed to upload data.")) # This does not catch most cases of errors; hence see below
             return
 
         proc.waitForFinished()
