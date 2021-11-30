@@ -165,7 +165,15 @@ class PrivacyPage(QtWidgets.QWizardPage, object):
         self.setSubTitle(tr('Uploading a Hardware Probe is subject to the following Privacy Terms.'))
         privacy_label = QtWidgets.QTextBrowser()
         privacy_layout = QtWidgets.QVBoxLayout(self)
-        privacy_label.setText(tr(open(os.path.dirname(__file__) + '/intro.txt', 'r').read()))  # Skip the first 3 lines
+        
+        text = ""
+        text += tr("This will upload the anonymized hardware probe to the Linux hardware database. The probe will be published publicly under a permanent URL to view the probe.") + "\n\n"
+        text += tr("Private information (including the username, hostname, IP addresses, MAC addresses, UUIDs and serial numbers) is not uploaded to the database.") + "\n\n"
+        text += tr("The tool uploads 32-byte prefix of salted SHA512 hash of MAC addresses/UUIDs and serial numbers to properly distinguish between different computers and hard drives. All the data is uploaded securely via HTTPS.") + "\n\n"
+        text += tr("DISCLAIMER: BY USING THIS UTILITY, YOU AGREE THAT INFORMATION ABOUT YOUR HARDWARE WILL BE UPLOADED TO A PUBLICLY VISIBLE DATABASE. DO NOT USE THIS UTILITY IF YOU DO NOT AGREE WITH THIS.") + "\n\n"
+        text += tr("Please contact https://linux-hardware.org/?view=contacts in case of questions and in case you wish accidentally submitted probes to be removed from the database.")
+        
+        privacy_label.setText(text)
         font = wizard.font()
         font.setPointSize(9)
         privacy_label.setFont(font)

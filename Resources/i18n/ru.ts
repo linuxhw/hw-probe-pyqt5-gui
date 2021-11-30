@@ -88,8 +88,24 @@
         <translation>Проба оборудования выполнена с ошибкой.</translation>
     </message>
     <message>
-        <source>This will upload the anonymized hardware probe to the Linux hardware database. The probe will be published publicly under a permanent URL to view the probe.\n\nPrivate information (including the username, hostname, IP addresses, MAC addresses, UUIDs and serial numbers) is not uploaded to the database.\n\nThe tool uploads 32-byte prefix of salted SHA512 hash of MAC addresses/UUIDs and serial numbers to properly distinguish between different computers and hard drives. All the data is uploaded securely via HTTPS.\n\nDISCLAIMER: BY USING THIS UTILITY, YOU AGREE THAT INFORMATION ABOUT YOUR HARDWARE WILL BE UPLOADED TO A PUBLICLY VISIBLE DATABASE. DO NOT USE THIS UTILITY IF YOU DO NOT AGREE WITH THIS.\n\nPlease contact https://linux-hardware.org/?view=contacts in case of questions and in case you wish accidentally submitted probes to be removed from the database.</source>
-        <translation>Переход далее загрузит анонимную пробу оборудования в базу данных оборудования Linux. Проба будет опубликована и доступна по постояноой ссылке для ее просмотра.\n\nПриватная информация (включая имя пользователя, имя хоста, IP-адреса, MAC-адреса, идентификаторы UUID и серийные номера) не передаются в базу данных.\n\nПрограмма загрузит в базу 32-байтовый префикс хешсуммы SHA512 от MAC-адресов/UUID и серийных номеров, чтобы различать различные компьютеры и жесткие диски. Все данные загружаются в базу по протоколу HTTPS.\n\nОТКАЗ ОТ ОТВЕТСТВЕННОСТИ: ИСПОЛЬЗУЯ ЭТУ ПРОГРАММУ, ВЫ СОГЛАШАЕТЕСЬ С ТЕМ, ЧТО ИНФОРМАЦИЯ О ВАШЕМ ОБОРУДОВАНИИ БУДЕТ ЗАГРУЖЕНА В ПУБЛИЧНО ВИДИМУЮ БАЗУ ДАННЫХ. НЕ ИСПОЛЬЗУЙТЕ ЭТУ УТИЛИТУ, ЕСЛИ ВЫ НЕ СОГЛАСНЫ С ЭТИМ.\n\nПожалуйста, свяжитесь с автором проекта на странице https://linux-hardware.org/?view=contacts в случае, если вы желаете удалить пробу, созданную по ошибке.</translation>
+        <source>This will upload the anonymized hardware probe to the Linux hardware database. The probe will be published publicly under a permanent URL to view the probe.</source>
+        <translation>Переход далее загрузит анонимную пробу оборудования в базу данных оборудования Linux. Проба будет опубликована и доступна по постояноой ссылке для ее просмотра.</translation>
+    </message>
+    <message>
+        <source>Private information (including the username, hostname, IP addresses, MAC addresses, UUIDs and serial numbers) is not uploaded to the database.</source>
+        <translation>Приватная информация (включая имя пользователя, имя хоста, IP-адреса, MAC-адреса, идентификаторы UUID и серийные номера) не передаются в базу данных.</translation>
+    </message>
+    <message>
+        <source>The tool uploads 32-byte prefix of salted SHA512 hash of MAC addresses/UUIDs and serial numbers to properly distinguish between different computers and hard drives. All the data is uploaded securely via HTTPS.</source>
+        <translation>Программа передаст в базу 32-байтовый префикс хешсуммы SHA512 от MAC-адресов/UUID и серийных номеров, чтобы различать компьютеры и жесткие диски. Все данные загружаются в базу по протоколу HTTPS.</translation>
+    </message>
+    <message>
+        <source>DISCLAIMER: BY USING THIS UTILITY, YOU AGREE THAT INFORMATION ABOUT YOUR HARDWARE WILL BE UPLOADED TO A PUBLICLY VISIBLE DATABASE. DO NOT USE THIS UTILITY IF YOU DO NOT AGREE WITH THIS.</source>
+        <translation>ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ: ИСПОЛЬЗУЯ ЭТУ ПРОГРАММУ, ВЫ СОГЛАШАЕТЕСЬ С ТЕМ, ЧТО ИНФОРМАЦИЯ О ВАШЕМ ОБОРУДОВАНИИ БУДЕТ ЗАГРУЖЕНА В ПУБЛИЧНО ВИДИМУЮ БАЗУ ДАННЫХ. НЕ ИСПОЛЬЗУЙТЕ ЭТУ УТИЛИТУ, ЕСЛИ ВЫ НЕ СОГЛАСНЫ С ЭТИМ.</translation>
+    </message>
+    <message>
+        <source>Please contact https://linux-hardware.org/?view=contacts in case of questions and in case you wish accidentally submitted probes to be removed from the database.</source>
+        <translation>Пожалуйста, свяжитесь с автором проекта на странице https://linux-hardware.org/?view=contacts в случае, если вы желаете удалить пробу, созданную по ошибке.</translation>
     </message>
     <message>
         <source>Your probe URL is</source>
