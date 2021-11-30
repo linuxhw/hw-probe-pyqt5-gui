@@ -25,13 +25,13 @@
     </message>
     <message>
         <source>Please see %s for more information.</source>
-        <translation>Пожалуйста, передите по ссылке %s для дополнительной информации.</translation>
+        <translation>Пожалуйста, перейдите по ссылке %s для дополнительной информации.</translation>
     </message>
     <message>
         <source>&lt;p&gt;This utility collects anonymized hardware details of your computer and can upload them to a public database.&lt;/p&gt;
         &lt;p&gt;This can help users and developers to collaboratively debug hardware related issues, check for hardware compatibility and find drivers.&lt;/p&gt;
         &lt;p&gt;You will get a permanent probe URL to view and share collected information.&lt;/p&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;</source>
-        <translation>&lt;p&gt;Эта утилита собирает анонимные данные о вашем оборудовании и может загрузить их в базу оборудования.&lt;/p&gt;
+        <translation>&lt;p&gt;Эта программа собирает анонимные данные о вашем оборудовании и может загрузить их в базу оборудования.&lt;/p&gt;
         &lt;p&gt;Это может помочь пользователям и разработчикам системы в совместной отладке проблем с оборудованием, проверке совместимости и поиске драйверов.&lt;/p&gt;
         &lt;p&gt;Вам будет выдана постоянная ссылка для просмотра собранной информации. Ей можно поделиться с другими людьми.&lt;/p&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;</translation>
     </message>
@@ -49,11 +49,11 @@
     </message>
     <message>
         <source>Uploading Hardware Probe</source>
-        <translation>Передача информации о оборудовании</translation>
+        <translation>Передача информации об оборудовании</translation>
     </message>
     <message>
         <source>The Hardware Probe is being uploaded to the public database</source>
-        <translation>Информация о оборудовании передается в публичную базу данных</translation>
+        <translation>Информация об оборудовании передается в публичную базу данных</translation>
     </message>
     <message>
         <source>You need an active internet connection in order to upload.</source>
@@ -97,11 +97,11 @@
     </message>
     <message>
         <source>The tool uploads 32-byte prefix of salted SHA512 hash of MAC addresses/UUIDs and serial numbers to properly distinguish between different computers and hard drives. All the data is uploaded securely via HTTPS.</source>
-        <translation>Программа передаст в базу 32-байтовый префикс хешсуммы SHA512 от MAC-адресов/UUID и серийных номеров, чтобы различать компьютеры и жесткие диски. Все данные загружаются в базу по протоколу HTTPS.</translation>
+        <translation>Программа загрузит в базу данных 32-байтовый префикс хешсуммы SHA512 от MAC-адресов/UUID и серийных номеров, чтобы различать компьютеры и жесткие диски. Все данные загружаются в базу данных по протоколу HTTPS.</translation>
     </message>
     <message>
         <source>DISCLAIMER: BY USING THIS UTILITY, YOU AGREE THAT INFORMATION ABOUT YOUR HARDWARE WILL BE UPLOADED TO A PUBLICLY VISIBLE DATABASE. DO NOT USE THIS UTILITY IF YOU DO NOT AGREE WITH THIS.</source>
-        <translation>ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ: ИСПОЛЬЗУЯ ЭТУ ПРОГРАММУ, ВЫ СОГЛАШАЕТЕСЬ С ТЕМ, ЧТО ИНФОРМАЦИЯ О ВАШЕМ ОБОРУДОВАНИИ БУДЕТ ЗАГРУЖЕНА В ПУБЛИЧНО ВИДИМУЮ БАЗУ ДАННЫХ. НЕ ИСПОЛЬЗУЙТЕ ЭТУ УТИЛИТУ, ЕСЛИ ВЫ НЕ СОГЛАСНЫ С ЭТИМ.</translation>
+        <translation>ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ: ИСПОЛЬЗУЯ ЭТУ ПРОГРАММУ, ВЫ СОГЛАШАЕТЕСЬ С ТЕМ, ЧТО ИНФОРМАЦИЯ О ВАШЕМ ОБОРУДОВАНИИ БУДЕТ ЗАГРУЖЕНА В ПУБЛИЧНО ВИДИМУЮ БАЗУ ДАННЫХ. НЕ ИСПОЛЬЗУЙТЕ ЭТУ ПРОГРАММУ, ЕСЛИ ВЫ НЕ СОГЛАСНЫ С ЭТИМ.</translation>
     </message>
     <message>
         <source>Please contact https://linux-hardware.org/?view=contacts in case of questions and in case you wish accidentally submitted probes to be removed from the database.</source>

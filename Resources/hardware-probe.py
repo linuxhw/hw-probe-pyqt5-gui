@@ -428,7 +428,7 @@ class SuccessPage(QtWidgets.QWizardPage, object):
         layout.addWidget(center_widget, True) # True = add stretch vertically
 
         label = QtWidgets.QLabel()
-        label.setText(tr("Your probe URL is") + "<a href='%s'>%s</a>" % (wizard.server_probe_url, wizard.server_probe_url))
+        label.setText(tr("Your probe URL is") + " <a href='%s'>%s</a>" % (wizard.server_probe_url, wizard.server_probe_url))
         label.setWordWrap(True)
         layout.addWidget(label)
 
