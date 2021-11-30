@@ -77,8 +77,9 @@ def internetCheckConnected(host="8.8.8.8", port=53, timeout=3):
     except socket.error as ex:
         print(ex)
         print("Trying ping")
-        if os.system("ping -c 1 google.com >/dev/null") == 0:
-            return True
+        for host in ['ya.ru', 'google.com', 'linux-hardware.org']:
+            if os.system("ping -c 1 %s >/dev/null" % host) == 0:
+                return True
         return False
 
 
@@ -185,7 +186,7 @@ class Filer(QtWidgets.QWizardPage, object):
         print("Preparing probe raw viewer")
         super().__init__()
 
-        self.setTitle(tr('Raw Collected Info'))
+        self.setTitle(tr("Raw Collected Info"))
 
         self.model = QFileSystemModel()
         self.model.setRootPath(wizard.hw_probe_output)
@@ -203,7 +204,7 @@ class Filer(QtWidgets.QWizardPage, object):
 
     def contextMenu(self):
         menu = QtWidgets.QMenu()
-        open = menu.addAction("Open")
+        open = menu.addAction(tr("Open file"))
         open.triggered.connect(self.openFile)
         cursor = QtGui.QCursor()
         menu.exec_(cursor.pos())
@@ -211,6 +212,10 @@ class Filer(QtWidgets.QWizardPage, object):
     def openFile(self):
         index = self.tree.currentIndex()
         filePath = self.model.filePath(index)
+
+        if not os.path.isfile(filePath):
+            return
+
         text = open(filePath).read()
 
         viewer = Viewer(wizard)
@@ -415,11 +420,11 @@ class SuccessPage(QtWidgets.QWizardPage, object):
         layout.addWidget(center_widget, True) # True = add stretch vertically
 
         label = QtWidgets.QLabel()
-        label.setText("Your probe URL is <a href='%s'>%s</a>" % (wizard.server_probe_url, wizard.server_probe_url))
+        label.setText(tr("Your probe URL is <a href='%s'>%s</a>") % (wizard.server_probe_url, wizard.server_probe_url))
         label.setWordWrap(True)
         layout.addWidget(label)
 
-        wizard.showUploadedProbeButton = QtWidgets.QPushButton('Open probe URL in your browser', self)
+        wizard.showUploadedProbeButton = QtWidgets.QPushButton(tr("Open probe URL in your browser"), self)
         wizard.showUploadedProbeButton.clicked.connect(self.showUploadedProbeButtonClicked)
         layout.addWidget(wizard.showUploadedProbeButton)
 
@@ -477,7 +482,7 @@ class ErrorPage(QtWidgets.QWizardPage, object):
         self.label.setWordWrap(True)
         self.label.clear()
         self.label.setText(wizard.error_message_nice)
-        self.setButtonText(wizard.CancelButton, "Quit")
+        self.setButtonText(wizard.CancelButton, tr("Quit"))
         wizard.setButtonLayout([QtWidgets.QWizard.Stretch, QtWidgets.QWizard.CancelButton])
 
 #############################################################################
