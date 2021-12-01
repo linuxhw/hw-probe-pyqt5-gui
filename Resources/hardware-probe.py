@@ -37,7 +37,7 @@ import sys, os, socket
 import tempfile
 import shutil
 
-from PyQt5 import QtWidgets, QtGui, QtCore # pkg install py37-qt5-widgets
+from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtWidgets import QTreeView, QFileSystemModel, QVBoxLayout, QPlainTextEdit, QMainWindow
 
 # Plenty of TODOs and FIXMEs are sprinkled across this code.
@@ -47,7 +47,7 @@ from PyQt5.QtWidgets import QTreeView, QFileSystemModel, QVBoxLayout, QPlainText
 
 # Translate this application using Qt .ts files without the need for compilation
 import tstranslator
-# FIXME: Do not import translations from outside of the appliction bundle
+# FIXME: Do not import translations from outside of the application bundle
 # which currently is difficult because we have all translations for all applications
 # in the whole repository in the same .ts files
 tstr = None
@@ -283,7 +283,7 @@ class IntroPage(QtWidgets.QWizardPage, object):
     def run_probe_locally(self):
         proc = QtCore.QProcess()
 
-        if os.environ.get('HW_PROBE_FLATPAK') or os.environ.get('HW_PROBE_SNAP'):
+        if os.environ.get('HW_PROBE_FLATPAK') or os.environ.get('HW_PROBE_SNAP') or os.environ.get('NO_SUDO'):
             command = self.wizard().hw_probe_tool
             args = ["-all", "-output", self.wizard().hw_probe_output]
         else:

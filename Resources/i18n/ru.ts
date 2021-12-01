@@ -89,7 +89,7 @@
     </message>
     <message>
         <source>This will upload the anonymized hardware probe to the Linux hardware database. The probe will be published publicly under a permanent URL to view the probe.</source>
-        <translation>Переход далее загрузит анонимную пробу оборудования в базу данных оборудования Linux. Проба будет опубликована и доступна по постояноой ссылке для ее просмотра.</translation>
+        <translation>Переход далее загрузит анонимную пробу оборудования в базу данных оборудования Linux. Проба будет опубликована и доступна по постоянной ссылке для ее просмотра.</translation>
     </message>
     <message>
         <source>Private information (including the username, hostname, IP addresses, MAC addresses, UUIDs and serial numbers) is not uploaded to the database.</source>
@@ -118,6 +118,26 @@
     <message>
         <source>Open file</source>
         <translation>Открыть файл</translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation>Пароль</translation>
+    </message>
+    <message>
+        <source>Back</source>
+        <translation>Назад</translation>
+    </message>
+    <message>
+        <source>Go Back</source>
+        <translation>Назад</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation>Продолжить</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
     </message>
 </context>
 <context>

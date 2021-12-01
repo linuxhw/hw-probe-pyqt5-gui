@@ -20,9 +20,20 @@
 
 
 from PyQt5 import QtWidgets
+import tstranslator
+
+tstr = None
+def tr(input):
+    global tstr
+    try:
+        if not tstr:
+            tstr = tstranslator.TsTranslator(os.path.dirname(__file__) + "/i18n", "")
+        return tstr.tr(input)
+    except:
+        return input
 
 app = QtWidgets.QApplication([])
-password, ok = QtWidgets.QInputDialog.getText(None, "sudo", "Password", QtWidgets.QLineEdit.Password)
+password, ok = QtWidgets.QInputDialog.getText(None, "sudo", tr("Password"), QtWidgets.QLineEdit.Password)
 if ok:
     print(password)
 app.exit(0)
