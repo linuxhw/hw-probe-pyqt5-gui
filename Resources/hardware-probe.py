@@ -286,6 +286,10 @@ class IntroPage(QtWidgets.QWizardPage, object):
         if os.environ.get('HW_PROBE_FLATPAK') or os.environ.get('HW_PROBE_SNAP') or os.environ.get('NO_SUDO'):
             command = self.wizard().hw_probe_tool
             args = ["-all", "-output", self.wizard().hw_probe_output]
+        elif os.environ.get('XDG_SESSION_TYPE') == 'wayland':
+            # SUDO_ASKPASS doesn't work on Wayland currently, so piping the password
+            command = 'bash'
+            args = ["-c", os.environ.get('SUDO_ASKPASS') + " | sudo -S -E " + self.wizard().hw_probe_tool + " -all " + " -output " + self.wizard().hw_probe_output]
         else:
             command = 'sudo'
             args = ["-A", "-E", self.wizard().hw_probe_tool, "-all", "-output", self.wizard().hw_probe_output]
