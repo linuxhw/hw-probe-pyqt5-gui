@@ -133,6 +133,10 @@
     </message>
     <message>
         <source>Next</source>
+        <translation>Далее</translation>
+    </message>
+    <message>
+        <source>Continue</source>
         <translation>Продолжить</translation>
     </message>
     <message>
